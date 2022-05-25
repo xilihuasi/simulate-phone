@@ -1,0 +1,9 @@
+.app-item {
+  display: inline-block;
+}
+
+.app-item-name {
+  font-size: 28px;
+  margin-top: 5px;
+  color: #fff;
+}

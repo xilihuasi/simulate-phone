@@ -1,0 +1,13 @@
+.time {
+    font-size: 125px;
+}
+
+.date {
+    font-size: 35px;
+}
+
+.sub-title {
+    display: inline-block;
+    margin-top: 5px;
+    font-size: 25px;
+}
