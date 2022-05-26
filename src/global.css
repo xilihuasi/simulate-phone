@@ -7,3 +7,12 @@ body,
 body {
   margin: 0;
 }
+
+:root:root {
+  --font-size: 36px;
+}
+
+.mucfc-nav-bar {
+  background-color: #fff;
+  height: 88px;
+}

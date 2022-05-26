@@ -1,37 +1,46 @@
-import { InfiniteScroll, List } from 'antd-mobile';
 import React, { useState } from 'react';
 import { history } from 'umi';
-
-let count = 0;
-
-async function mockRequest() {
-  console.log('mockRequest');
-  if (count >= 5) {
-    return [];
-  }
-  count++;
-  return ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q'];
-}
+import { List, NavBar } from 'antd-mobile';
+import { UnorderedListOutline, TeamOutline } from 'antd-mobile-icons';
+import styles from './index.css';
 
 export default () => {
-  const [data, setData] = useState<string[]>([]);
-  const [hasMore, setHasMore] = useState(true);
-  async function loadMore() {
-    const append = await mockRequest();
-    setData((val) => [...val, ...append]);
-    setHasMore(append.length > 0);
-  }
+  const list = [
+    {
+      name: '设备管理',
+      icon: <UnorderedListOutline />,
+      onClick: () => history.push('/setting/pages/deviceManage'),
+      clickable: true
+    },
+    {
+      name: '联系人管理',
+      icon: <TeamOutline />,
+      onClick: () => history.push('/setting/pages/contactManage'),
+      clickable: true
+    }
+  ];
+
+  const goBack = () => {
+    history.goBack();
+  };
 
   return (
-    <>
-      <List>
-        {data.map((item, index) => (
-          <List.Item key={index} onClick={() => history.goBack()}>
-            {item}
+    <div className={styles['setting-layout']}>
+      <NavBar className="mucfc-nav-bar" onBack={goBack}>
+        设置
+      </NavBar>
+      <List style={{ '--font-size': '0.32rem', marginTop: 20 }}>
+        {list.map((item) => (
+          <List.Item
+            key={item.name}
+            prefix={item.icon}
+            clickable={item.clickable}
+            onClick={item.onClick}
+          >
+            {item.name}
           </List.Item>
         ))}
       </List>
-      <InfiniteScroll loadMore={loadMore} hasMore={hasMore} />
-    </>
+    </div>
   );
 };

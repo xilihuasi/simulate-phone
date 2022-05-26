@@ -3,6 +3,10 @@
 // 下方配置仅需要显式使用 alita 插件
 export default {
   plugins: ['@alitajs/hd'],
-  hd: {},
+  hd: {
+    px2rem: {
+      selectorDoubleRemList: [/.adm-/]
+    }
+  },
   esbuild: {},
 };

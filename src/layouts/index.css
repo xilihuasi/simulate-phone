@@ -1,7 +1,6 @@
 .basiclayout {
   /* font-family: Georgia, sans-serif; */
   background: linear-gradient(240deg,#221676, #7c93d2);
-  text-align: center;
   height: 100%;
   overflow: hidden;
 }
