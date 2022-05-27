@@ -29,7 +29,7 @@ export default () => {
       <NavBar className="mucfc-nav-bar" onBack={goBack}>
         设置
       </NavBar>
-      <List style={{ '--font-size': '0.32rem', marginTop: 20 }}>
+      <List style={{ marginTop: 20 }}>
         {list.map((item) => (
           <List.Item
             key={item.name}

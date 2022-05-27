@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { history } from 'umi';
 import { Button, List, NavBar, Space, Toast, Form, Input, Modal } from 'antd-mobile';
 import parentStyles from '@/pages/setting/index.css';
@@ -14,6 +14,7 @@ export default function ContactManage() {
   const [list, setList] = useState<ContactListItemProps[]>([]);
   const [visible, setVisible] = useState<boolean | undefined>(false);
   const [form] = Form.useForm();
+  const maskFlag = useRef(false);
 
   const goBack = () => {
     history.goBack();
@@ -40,7 +41,7 @@ export default function ContactManage() {
       .filter((item) => !!item)
       .map((item) => {
         const [name, phone] = item.split(',');
-        return { name, phone };
+        return { name, phone: `${phone.substring(0, 3)}*****${phone.substring(8)}` };
       });
     setList(contacts);
   };
@@ -58,14 +59,20 @@ export default function ContactManage() {
     );
   }, [form]);
 
-  const onAddContactClick = async () => {
+  const onAddContactClick = () => {
     setVisible(true);
   };
+
+  const onToggleMaskClick = () => {
+    maskFlag.current = !maskFlag.current;
+    callHandler('toggleMask', maskFlag.current);
+    Toast.show({ icon: 'success', content: '操作成功' });
+  }
 
   const onModalConfirm = () => {
     const values = form.getFieldsValue();
     const { name, phone } = values;
-    callHandler('saveContact', { name, phone }, () => {
+    callHandler('saveContact', `${name},${phone}`, () => {
       Toast.show({ icon: 'success', content: '添加成功' });
       setVisible(false);
     });
@@ -88,6 +95,7 @@ export default function ContactManage() {
         <Space>
           <Button onClick={onContactClick}>同步联系人</Button>
           <Button onClick={onAddContactClick}>添加联系人</Button>
+          <Button onClick={onToggleMaskClick}>切换脱敏</Button>
         </Space>
       </div>
       <Modal
