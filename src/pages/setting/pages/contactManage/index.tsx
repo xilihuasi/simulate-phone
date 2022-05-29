@@ -4,6 +4,7 @@ import { Button, List, NavBar, Space, Toast, Form, Input, Modal } from 'antd-mob
 import parentStyles from '@/pages/setting/index.css';
 import styles from './index.css';
 import { callHandler, registerHandler } from '@/utils/bridge';
+import { maskMobile } from '@/utils/commonUtils';
 
 interface ContactListItemProps {
   name: string;
@@ -13,8 +14,8 @@ interface ContactListItemProps {
 export default function ContactManage() {
   const [list, setList] = useState<ContactListItemProps[]>([]);
   const [visible, setVisible] = useState<boolean | undefined>(false);
+  const [isMask, setIsMask] = useState<boolean>(false);
   const [form] = Form.useForm();
-  const maskFlag = useRef(false);
 
   const goBack = () => {
     history.goBack();
@@ -22,11 +23,15 @@ export default function ContactManage() {
 
   const initContact = () => {
     onContactClick();
+    callHandler('getMaskStatus');
   };
 
   useEffect(() => {
     registerHandler('saveWebContact', (data: any) => {
       contactMessageHandler(data);
+    });
+    registerHandler('getMaskStatus', (data: any) => {
+      setIsMask(data === 'true');
     });
     initContact();
   }, []);
@@ -41,7 +46,7 @@ export default function ContactManage() {
       .filter((item) => !!item)
       .map((item) => {
         const [name, phone] = item.split(',');
-        return { name, phone: `${phone.substring(0, 3)}*****${phone.substring(8)}` };
+        return { name, phone: isMask ? maskMobile(phone) : phone };
       });
     setList(contacts);
   };
@@ -64,8 +69,8 @@ export default function ContactManage() {
   };
 
   const onToggleMaskClick = () => {
-    maskFlag.current = !maskFlag.current;
-    callHandler('toggleMask', maskFlag.current);
+    callHandler('toggleMask', !isMask);
+    setIsMask(!isMask);
     Toast.show({ icon: 'success', content: '操作成功' });
   }
 
@@ -87,7 +92,7 @@ export default function ContactManage() {
         {list.map((item) => (
           <List.Item key={item.name} onClick={onContactClick}>
             <div className={styles.name}>{item.name}</div>
-            <div className={styles['sub-name']}>{item.phone}</div>
+            <div className={styles['sub-name']}>{isMask ? maskMobile(item.phone) : item.phone}</div>
           </List.Item>
         ))}
       </List>
